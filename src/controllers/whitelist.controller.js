@@ -29,18 +29,14 @@ const getAllWhitelistEntries = asyncHandler(async (req, res) => {
     .populate("createdBy", "email");
 
   const count = entries.length;
-  return res
-    .status(200)
-    .json(
-      new ApiResponse(
-        200,
-        count,
-        totalEntries,
-        page,
-        Math.ceil(totalEntries / limit),
-        entries
-      )
-    );
+  res.status(200).json({
+    success: true,
+    count: entries.length,
+    total: totalEntries,
+    page,
+    pages: Math.ceil(totalEntries / limit),
+    data: entries,
+  });
 });
 
 const getWhiteListEntry = asyncHandler(async (req, res) => {
