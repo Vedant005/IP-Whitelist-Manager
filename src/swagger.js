@@ -40,6 +40,10 @@ const options = {
           type: "object",
           properties: {
             _id: { type: "string", description: "User ID" },
+            name: {
+              type: "string",
+              description: "User's name",
+            },
             email: {
               type: "string",
               format: "email",
@@ -63,6 +67,7 @@ const options = {
           },
           example: {
             _id: "60c72b2f9c1a4d0015f8a3d4",
+            name: "myname",
             email: "test@example.com",
             role: "user",
             createdAt: "2023-10-26T10:00:00.000Z",
