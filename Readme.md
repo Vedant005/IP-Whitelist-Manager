@@ -56,20 +56,10 @@ This project implements all core requirements and several bonus features to deli
 
     - Implemented using `express-rate-limit` for sensitive endpoints like user login and general API access. This helps protect against brute-force attacks and API abuse.
 
-2.  **Bulk Import/Export:**
-
-    - Admins can bulk import whitelist entries from CSV or JSON files (or direct JSON body) via a dedicated `POST` endpoint.
-    - Admins can bulk export all whitelist entries to CSV or JSON format via a `GET` endpoint.
-
-3.  **Role-based Access Control (RBAC):**
+2.  **Role-based Access Control (RBAC):**
 
     - Differentiates permissions between `admin` and `user` roles.
     - The `authorizeRoles` middleware ensures that only `admin` users can perform critical operations like creating, updating, or deleting whitelist entries. New user registrations default to `user` role unless explicitly set.
-
-4.  **Email Notifications:**
-    - Utilizes `nodemailer` to send automated email notifications to administrators for suspicious activities, such as:
-      - Unauthorized access attempts (IP not whitelisted).
-      - Failed login attempts.
 
 ## Technical Stack
 
@@ -81,10 +71,6 @@ This project implements all core requirements and several bonus features to deli
 - **Environment Variables:** `dotenv`
 - **Validation:** `express-validator`, `ip` (for IP/CIDR validation)
 - **API Documentation:** `swagger-jsdoc`, `swagger-ui-express`, `yamljs`
-- **File Uploads:** `multer` (for bulk import)
-- **CSV Processing:** `csv-parser`, `json2csv`
-- **Emailing:** `nodemailer`
-- **Logging:** Custom simple logger (`utils/logger.js`)
 - **Error Handling:** Custom `ApiError` class and global error handling middleware for consistent responses.
 - **Asynchronous Operations:** `asyncHandler` utility for cleaner `async/await` error handling.
 
@@ -124,16 +110,8 @@ Before running the application, ensure you have the following installed:
       JWT_EXPIRES_IN=1h # Access token expiry
       JWT_REFRESH_SECRET=YOUR_VERY_STRONG_REFRESH_SECRET # Make this very long and random
       JWT_REFRESH_EXPIRES_IN=7d # Refresh token expiry
-      ADMIN_EMAIL=admin@example.com
-      ADMIN_PASSWORD=adminpassword # Change this for production!
-      EMAIL_HOST=smtp.ethereal.email # Or your SMTP host (e.g., smtp.sendgrid.net)
-      EMAIL_PORT=587 # Or your SMTP port (e.g., 465 for SSL)
-      EMAIL_USER=your_ethereal_username # Your SMTP username
-      EMAIL_PASS=your_ethereal_password # Your SMTP password
       ADMIN_NOTIFICATION_EMAIL=alerts@yourdomain.com # Email to send security alerts
-      SENDER_EMAIL=no-reply@yourdomain.com # Email address that sends notifications
-      ```
-      _For `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USER`, `EMAIL_PASS`, consider using a service like [Ethereal Mail](https://ethereal.email/) for testing during development._
+
 
 4.  **Ensure MongoDB is running:**
     The application will attempt to connect to the MongoDB instance specified in `MONGO_URI`.
@@ -205,20 +183,7 @@ This documentation provides details on all available endpoints, their request/re
   - **Path:** `/api/v1/whitelist/:id`
   - **Auth:** `Bearer Token` (`admin` role)
 
-### 5. Bulk Import/Export (Admin Only)
-
-- **Bulk Import:**
-  - **Method:** `POST`
-  - **Path:** `/api/v1/whitelist/bulk-import`
-  - **Body:** `multipart/form-data` with `file` (CSV/JSON) or `application/json` with `data` array.
-  - **Auth:** `Bearer Token` (`admin` role)
-- **Bulk Export:**
-  - **Method:** `GET`
-  - **Path:** `/api/v1/whitelist/bulk-export`
-  - **Query Params:** `format` (csv or json, default json)
-  - **Auth:** `Bearer Token` (`admin` role)
-
-### 6. Protected Service Test Endpoints
+### 5. Protected Service Test Endpoints
 
 These endpoints demonstrate the `enforceIpWhitelist` middleware in action.
 
@@ -259,10 +224,10 @@ The API follows a consistent response structure:
 
 Custom `ApiError` and `ApiResponse` classes ensure standardization, while a global error handling middleware catches unhandled exceptions, providing clean responses and preventing server crashes.
 
-## Logging and Auditing
+## Auditing
 
 - All critical system events, access attempts, and modifications are meticulously logged to the MongoDB `AuditLog` collection.
-- A custom `utils/logger.js` utility ensures structured logging to both console and a log file (`logs/app.log`), aiding in monitoring and debugging.
+
 
 ## Testing the API
 
